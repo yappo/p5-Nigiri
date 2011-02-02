@@ -3,6 +3,8 @@ use strict;
 use warnings;
 
 sub new {
+    my $opts = {};
+    $opts = pop @_ if scalar(@_) > 1 && ref $_[-1];
     my($self, %args) = @_;
 
     my $row_class = $self->{row_class};
@@ -11,10 +13,10 @@ sub new {
         $_ => $args{$_} || undef
     } $self->get_columns;
     my %original_data = map {
-        $_ => $args{$_} || undef
+        $_ => $opts->{from_db} ? $args{$_} || undef : undef
     } $self->get_columns;
     my %update_column = map {
-        $_ => 0
+        $_ => $opts->{from_db} ? 0 : $args{$_} ? 1 : 0
     } $self->get_columns;
 
     bless {
@@ -59,7 +61,7 @@ sub lookup {
     $sth->finish;
     undef $sth;
     return unless $rv;
-    $self->new(%rec);
+    $self->new(%rec, { from_db => 1 });
 }
 
 1;

@@ -71,6 +71,11 @@ subtest 'default values in table instance' => sub {
     );
     is($user->id, 2);
     is($user->name, 'yappo');
+
+    my $user_id = $nigiri->user->new(
+        name => 'tokuhirom',
+    )->save;
+    is($user_id, 2);
 };
 
 subtest 'get & update' => sub {
