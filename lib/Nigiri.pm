@@ -3,12 +3,39 @@ use strict;
 use warnings;
 our $VERSION = '0.01';
 
+use DBI;
+
+use Nigiri::Loader;
+
+sub new {
+    my($class, $target, %args) = @_;
+
+    my $dbh;
+    if (ref $target eq 'DBI::db') {
+        $dbh = $target;
+    } else {
+        $dbh = DBI->connect(
+            $target,
+            $args{username},
+            $args{auth},
+            $args{attr}
+        ) or die "connect failed: $target";
+    }
+    my $loader = Nigiri::Loader->new($dbh);
+
+    my $klass = $loader->load_schema;
+
+    bless {
+        dbh => $dbh,
+    }, $klass;
+}
+
 1;
 __END__
 
 =head1 NAME
 
-Nigiri -
+Nigiri - micro ORM
 
 =head1 SYNOPSIS
 

@@ -5,12 +5,13 @@ readme_from 'lib/Nigiri.pm';
 readme_markdown_from 'lib/Nigiri.pm';
 githubmeta;
 
-# requires '';
+requires 'DBI';
+requires 'DBIx::Inspector';
+requires 'Package::Stash';
 
 tests 't/*.t';
 author_tests 'xt';
 
 build_requires 'Test::More';
 auto_set_repository;
-auto_include;
 WriteAll;

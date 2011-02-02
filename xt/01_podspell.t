@@ -8,3 +8,4 @@ __DATA__
 Kazuhiro Osawa
 yappo {at} shibuya {dot} pl
 Nigiri
+ORM
