@@ -1,10 +1,63 @@
 # NAME
 
-Nigiri -
+Nigiri - micro ORM
 
 # SYNOPSIS
 
+your sql schema in sqlite
+
+  CREATE TABLE user (
+      id INTEGER NOT NULL PRIMARY KEY,
+      name VARCHAR(255)
+  );
+  CREATE TABLE url (
+      id INTEGER NOT NULL PRIMARY KEY,
+      title VARCHAR(255),
+      url   VARCHAR(255)
+  );
+  CREATE TABLE bookmark (
+      id INTEGER NOT NULL PRIMARY KEY,
+      user_id INT,
+      url_id INT,
+      UNIQUE (user_id, url_id)
+  );
+  CREATE INDEX url_id ON bookmark (url_id);
+
+in perl code
+
   use Nigiri;
+
+  my $nigiri = Nigiri->new('dbi:SQLite:dbname=example.db');
+
+  # insert user table
+  my $user = $nigiri->user->new;
+  $user->name('nekokak');
+  my $user_id = $user->save;
+
+  # insert url table
+  my $url = $nigiri->url->new;
+  $url->title('Google');
+  $url->url('http://goo.gl/e');
+  my $url_id = $url->save;
+
+  # insert bookmark table
+  my $bookmark = $nigiri->bookmark->new;
+  $bookmark->user_id($user_id);
+  $bookmark->url_id($url_id);
+  my $bookmark_id = $bookmark->save;
+
+  # insert syntax sugar
+  my $user_id = $nigiri->user->new(
+      name => 'yappo',
+  )->save;
+
+  # lookup & update table
+  my $user = $nigiri->user->lookup(1);
+  $user->name('yappo');
+  $user->update;
+
+  # delete table
+  $user->delete;
 
 # DESCRIPTION
 
