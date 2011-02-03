@@ -9,3 +9,5 @@ Kazuhiro Osawa
 yappo {at} shibuya {dot} pl
 Nigiri
 ORM
+sql
+sqlite
