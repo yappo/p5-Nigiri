@@ -12,6 +12,7 @@ requires 'Package::Stash';
 tests 't/*.t';
 author_tests 'xt';
 
+build_requires 'DBD::SQLite';
 build_requires 'Test::More';
 auto_set_repository;
 WriteAll;
