@@ -67,6 +67,22 @@ subtest 'get where and order by' => sub {
     ]);
 };
 
+subtest 'get all rows order by desc' => sub {
+    my $itr = $user->search(
+        raw_sql => [
+            'ORDER BY id DESC',
+        ]
+    );
+    isa_ok($itr, 'Nigiri::Iterator');
+
+    my @get_users;
+    while (my $row = $itr->next) {
+        isa_ok($row, 'Nigiri::Neta::AnonClass1::user::Row');
+        push @get_users, [ $row->id, $row->name ];
+    }
+    is_deeply(\@get_users, [ reverse @users ]);
+};
+
 subtest 'get where no result' => sub {
     my $itr = $user->search(
         raw_sql => [
