@@ -2,6 +2,8 @@ package Nigiri::Neta::TableBase;
 use strict;
 use warnings;
 
+use Nigiri::Iterator;
+
 sub new {
     my $opts = {};
     $opts = pop @_ if scalar(@_) > 1 && ref $_[-1];
@@ -62,6 +64,43 @@ sub lookup {
     undef $sth;
     return unless $rv;
     $self->new(%rec, { from_db => 1 });
+}
+
+sub search {
+    my($self, %args) = @_;
+
+    my $append_sql = '';
+    my @bind_values;
+
+    my $raw_sql = $args{raw_sql};
+    if ($raw_sql && ref $raw_sql eq 'ARRAY') {
+        $append_sql  = ' ' . $raw_sql->[0];
+        my $params = scalar @{ $raw_sql };
+        if ($params > 1) {
+            @bind_values = @{ $raw_sql }[1..($params-1)];
+        }
+    }
+
+    my @bind;
+    my %rec;
+    for my $column ($self->get_columns) {
+        push @bind, \$rec{$column};
+    }
+
+    my $sql = sprintf 'SELECT %s FROM %s%s',
+        join(', ', $self->get_columns),
+        $self->get_table_name,
+        $append_sql;
+
+    my $sth = $self->{dbh}->prepare($sql);
+    $sth->execute(@bind_values);
+    $sth->bind_columns(undef, @bind);
+
+    Nigiri::Iterator->new(
+        sth   => $sth,
+        rec   => \%rec,
+        table => $self,
+    );
 }
 
 1;

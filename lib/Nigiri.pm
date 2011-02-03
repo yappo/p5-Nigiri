@@ -94,6 +94,17 @@ in perl code
   # delete table
   $user->delete;
 
+  # search
+  my $itr = $nigiri->user->search(
+      raw_sal => [
+          'WHERE name = ? OR name = ? ORDER BY id DESC LIMIT 10',
+          'nekokak', 'yappo'
+      ],
+  );
+  while (my $row = $itr->next) { # or while (my $row = <$itr>) {
+      say $row->id, $row->name;
+  }
+
 =head1 DESCRIPTION
 
 Nigiri is
