@@ -1,10 +1,6 @@
 package Nigiri::Iterator;
 use strict;
 use warnings;
-use overload
-    '<>' => sub { $_[0]->next },
-    fallback => 1;
-
 
 sub new {
     my($class, %args) = @_;

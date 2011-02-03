@@ -101,7 +101,7 @@ in perl code
           'nekokak', 'yappo'
       ],
   );
-  while (my $row = $itr->next) { # or while (my $row = <$itr>) {
+  while (my $row = $itr->next) {
       say $row->id, $row->name;
   }
 
