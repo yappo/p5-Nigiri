@@ -17,6 +17,7 @@ sub new {
 
 sub next {
     my $self = shift;
+    return unless $self->{sth};
     unless ($self->{sth}->fetch) {
         $self->end;
         return;
