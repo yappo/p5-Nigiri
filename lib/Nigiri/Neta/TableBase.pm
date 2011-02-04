@@ -67,18 +67,15 @@ sub lookup {
 }
 
 sub search {
-    my($self, %args) = @_;
+    my $self = shift;
 
     my $append_sql = '';
     my @bind_values;
 
-    my $raw_sql = $args{raw_sql};
-    if ($raw_sql && ref $raw_sql eq 'ARRAY') {
-        $append_sql  = ' ' . $raw_sql->[0];
-        my $params = scalar @{ $raw_sql };
-        if ($params > 1) {
-            @bind_values = @{ $raw_sql }[1..($params-1)];
-        }
+    if (@_ && not ref $_[0]) {
+        # normal sql
+        ($append_sql, @bind_values) = @_;
+        $append_sql = ' ' . $append_sql;
     }
 
     my @bind;

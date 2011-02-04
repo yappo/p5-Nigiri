@@ -48,10 +48,8 @@ subtest 'get all' => sub {
 
 subtest 'get where and order by' => sub {
     my $itr = $user->search(
-        raw_sql => [
-            'WHERE name = ? OR name = ? OR name = ? ORDER BY id DESC',
-            'kawanet', 'lestrrat', 'charsbar',
-        ]
+        'WHERE name = ? OR name = ? OR name = ? ORDER BY id DESC',
+        'kawanet', 'lestrrat', 'charsbar',
     );
     isa_ok($itr, 'Nigiri::Iterator');
 
@@ -69,9 +67,7 @@ subtest 'get where and order by' => sub {
 
 subtest 'get all rows order by desc' => sub {
     my $itr = $user->search(
-        raw_sql => [
-            'ORDER BY id DESC',
-        ]
+        'ORDER BY id DESC',
     );
     isa_ok($itr, 'Nigiri::Iterator');
 
@@ -85,10 +81,8 @@ subtest 'get all rows order by desc' => sub {
 
 subtest 'get where no result' => sub {
     my $itr = $user->search(
-        raw_sql => [
-            'WHERE name = ? AND name = ? AND name = ? ORDER BY id DESC',
-            'kawanet', 'lestrrat', 'charsbar',
-        ]
+        'WHERE name = ? AND name = ? AND name = ? ORDER BY id DESC',
+        'kawanet', 'lestrrat', 'charsbar',
     );
     isa_ok($itr, 'Nigiri::Iterator');
     ok($itr->next == undef);

@@ -96,10 +96,8 @@ in perl code
     
     # search
     my $itr = $nigiri->user->search(
-        raw_sal => [
-            'WHERE name = ? OR name = ? ORDER BY id DESC LIMIT 10',
-            'nekokak', 'yappo'
-        ],
+        'WHERE name = ? OR name = ? ORDER BY id DESC LIMIT 10',
+        'nekokak', 'yappo'
     );
     while (my $row = $itr->next) {
         say $row->id, $row->name;
