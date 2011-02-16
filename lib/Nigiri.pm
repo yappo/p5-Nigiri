@@ -26,7 +26,8 @@ sub new {
     my $klass = $loader->load_schema;
 
     bless {
-        dbh => $dbh,
+        dbh         => $dbh,
+        txn_manager => undef, # for transaction, handling in Nigiri::Neta::Base
     }, $klass;
 }
 
@@ -102,6 +103,17 @@ in perl code
     while (my $row = $itr->next) {
         say $row->id, $row->name;
     }
+
+    # transaction
+    do {
+        my $txn = $nigiri->txn_scope;
+        $row->save;
+    }; # rollback
+    do {
+        my $txn = $nigiri->txn_scope;
+        $row->save;
+        $txn->commit;
+    };
 
 =head1 DESCRIPTION
 

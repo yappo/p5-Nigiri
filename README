@@ -66,6 +66,17 @@ SYNOPSIS
             say $row->id, $row->name;
         }
 
+        # transaction
+        do {
+            my $txn = $nigiri->txn_scope;
+            $row->save;
+        }; # rollback
+        do {
+            my $txn = $nigiri->txn_scope;
+            $row->save;
+            $txn->commit;
+        };
+
 DESCRIPTION
     Nigiri is
 

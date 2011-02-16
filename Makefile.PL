@@ -7,6 +7,7 @@ githubmeta;
 
 requires 'DBI';
 requires 'DBIx::Inspector';
+requires 'DBIx::TransactionManager';
 requires 'Package::Stash';
 
 tests 't/*.t';
