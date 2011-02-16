@@ -4,6 +4,7 @@ use warnings;
 
 use Nigiri::Iterator;
 
+# create row class instance
 sub new {
     my $opts = {};
     $opts = pop @_ if scalar(@_) > 1 && ref $_[-1];
