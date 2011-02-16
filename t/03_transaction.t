@@ -1,16 +1,7 @@
-use common::sense;
-use lib 'lib';
+use t::Utils;
 use Test::More;
 
-use DBI;
-use Nigiri;
-
-my $dsn = 'dbi:SQLite:';
-my $dbh = DBI->connect($dsn, '', '', {RaiseError => 1, PrintError => 0, AutoCommit => 1});
-for my $sql (split /---\n/, do { local $/; <DATA> }) {
-    $dbh->do($sql);
-}
-my $nigiri = Nigiri->new($dbh);
+my $nigiri = t::Utils->setup_nigiri;
 
 subtest 'do basic transaction' => sub {
     $nigiri->txn_begin;
@@ -66,9 +57,3 @@ subtest 'do commit' => sub {
 };
 
 done_testing;
-
-__DATA__
-CREATE TABLE user (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name VARCHAR(255)
-)

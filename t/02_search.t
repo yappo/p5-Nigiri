@@ -1,16 +1,7 @@
-use common::sense;
-use lib 'lib';
+use t::Utils;
 use Test::More;
 
-use DBI;
-use Nigiri;
-
-my $dsn = 'dbi:SQLite:';
-my $dbh = DBI->connect($dsn);
-for my $sql (split /---\n/, do { local $/; <DATA> }) {
-    $dbh->do($sql);
-}
-my $nigiri = Nigiri->new($dbh);
+my $nigiri = t::Utils->setup_nigiri;
 my $user   = $nigiri->user;
 
 my @users = (
@@ -89,9 +80,3 @@ subtest 'get where no result' => sub {
 };
 
 done_testing;
-
-__DATA__
-CREATE TABLE user (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name VARCHAR(255)
-)

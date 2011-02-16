@@ -1,16 +1,7 @@
-use common::sense;
-use lib 'lib';
+use t::Utils;
 use Test::More;
 
-use DBI;
-use Nigiri;
-
-my $dsn = 'dbi:SQLite:';
-my $dbh = DBI->connect($dsn);
-for my $sql (split /---\n/, do { local $/; <DATA> }) {
-    $dbh->do($sql);
-}
-my $nigiri = Nigiri->new($dbh);
+my $nigiri = t::Utils->setup_nigiri;
 
 subtest 'instance' => sub {
     isa_ok($nigiri, 'Nigiri::Neta::Base');
@@ -101,24 +92,3 @@ subtest 'delete' => sub {
 
 
 done_testing;
-
-__DATA__
-CREATE TABLE user (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name VARCHAR(255)
-)
----
-CREATE TABLE url (
-    id INTEGER NOT NULL PRIMARY KEY,
-    title VARCHAR(255),
-    url   VARCHAR(255)
-)
----
-CREATE TABLE bookmark (
-    id INTEGER NOT NULL PRIMARY KEY,
-    user_id INT,
-    url_id INT,
-    UNIQUE (user_id, url_id)
-)
----
-CREATE INDEX url_id ON bookmark (url_id)
