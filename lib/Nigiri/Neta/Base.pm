@@ -27,8 +27,7 @@ sub get_dbh {
 # copied from Teng
 # for transaction
 sub txn_manager  {
-    $_[0]->_verify_pid;
-    $_[0]->{txn_manager} ||= DBIx::TransactionManager->new($_[0]->{context}->{dbh});
+    $_[0]->{txn_manager} ||= DBIx::TransactionManager->new($_[0]->get_dbh);
 }
 
 sub in_transaction {
