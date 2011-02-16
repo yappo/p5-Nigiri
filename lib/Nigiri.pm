@@ -28,6 +28,7 @@ sub new {
     bless {
         dbh         => $dbh,
         txn_manager => undef, # for transaction, handling in Nigiri::Neta::Base
+        owner_pid   => $$,
     }, $klass;
 }
 

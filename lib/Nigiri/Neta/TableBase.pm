@@ -29,7 +29,20 @@ sub new {
         _primary_keys           => [ $self->get_primary_keys ],
         _primary_keys_where_sql => $self->get_primary_keys_where_sql,
         _dbh                    => $self->{dbh},
+        _owner_pid              => $self->{owner_pid},
     }, $row_class;
+}
+
+sub _verify_pid {
+    my $self = shift;
+    if ($self->{owner_pid} != $$) {
+        Carp::confess('this connection is no use. because fork was done.');
+    }
+}
+sub get_dbh {
+    my $self = shift;
+    $self->_verify_pid;
+    $self->{dbh};
 }
 
 sub get_primary_keys_where_sql {
@@ -55,7 +68,7 @@ sub lookup {
         $self->get_table_name,
         $self->get_primary_keys_where_sql;
 
-    my $sth = $self->{dbh}->prepare($sql);
+    my $sth = $self->get_dbh->prepare($sql);
     $sth->execute(@keys);
     $sth->bind_columns(undef, @bind);
 
@@ -89,7 +102,7 @@ sub search {
         $self->get_table_name,
         $append_sql;
 
-    my $sth = $self->{dbh}->prepare($sql);
+    my $sth = $self->get_dbh->prepare($sql);
     $sth->execute(@bind_values);
     $sth->bind_columns(undef, @bind);
 

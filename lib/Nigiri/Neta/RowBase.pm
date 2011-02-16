@@ -2,6 +2,18 @@ package Nigiri::Neta::RowBase;
 use strict;
 use warnings;
 
+sub _verify_pid {
+    my $self = shift;
+    if ($self->{_owner_pid} != $$) {
+        Carp::confess('this connection is no use. because fork was done.');
+    }
+}
+sub get_dbh {
+    my $self = shift;
+    $self->_verify_pid;
+    $self->{_dbh};
+}
+
 sub save {
     my($self, ) = @_;
 
@@ -13,6 +25,7 @@ sub save {
         $self->{_update_column}->{$_} == 1
     } keys %{ $self->{_update_column} };
 
+    my $dbh = $self->get_dbh;
     if ($is_update) {
         my @values;
         my @set_columns;
@@ -32,7 +45,7 @@ sub save {
             $self->{_table_name},
             join(', ', @set_columns),
             $self->{_primary_keys_where_sql};
-        my $sth = $self->{_dbh}->prepare($sql);
+        my $sth = $dbh->prepare($sql);
         $sth->execute(@values);
         $sth->finish;
         return;
@@ -41,9 +54,9 @@ sub save {
             $self->{_table_name},
             join(', ', @columns),
             join(', ', ('?') x scalar(@columns));
-        my $sth = $self->{_dbh}->prepare($sql);
+        my $sth = $dbh->prepare($sql);
         $sth->execute(map { $self->{_row_data}->{$_} } @columns );
-        my $last_insert_id = $self->{_dbh}->last_insert_id(undef, undef, undef, undef);
+        my $last_insert_id = $dbh->last_insert_id(undef, undef, undef, undef);
         $sth->finish;
         return $last_insert_id;
     }
@@ -65,7 +78,7 @@ sub delete {
     my $sql = sprintf 'DELETE FROM %s WHERE %s',
         $self->{_table_name},
         $self->{_primary_keys_where_sql};
-    my $sth = $self->{_dbh}->prepare($sql);
+    my $sth = $self->get_dbh->prepare($sql);
     $sth->execute(@values);
     $sth->finish;
     $sth->rows;

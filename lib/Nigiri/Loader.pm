@@ -18,6 +18,7 @@ sub new {
     bless {
         inspector => $inspector,
         dbh       => $dbh,
+        owner_pid => $$,
     }, $class;
 }
 
@@ -57,6 +58,7 @@ sub create_base_class {
         my $obj = bless {
             row_class  => $class_names->{row},
             dbh        => $self->{dbh},
+            owner_pid  => $self->{owner_pid},
         }, $class_names->{table};
         $pkg->add_package_symbol('&' . $name, sub {
             $obj
