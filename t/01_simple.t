@@ -74,7 +74,7 @@ subtest 'get & update' => sub {
     is($user->id, 1);
     is($user->name, 'nekokak');
     is($user->name('yappo'), 'yappo');
-    ok($user->save eq undef);
+    ok(not defined $user->save);
 
     my $user2 = $nigiri->user->lookup(1);
     is($user2->id, 1);
@@ -87,7 +87,7 @@ subtest 'delete' => sub {
     is($user->delete, 0);
 
     my $user2 = $nigiri->user->lookup(1);
-    ok($user2 eq undef);
+    ok(not defined $user2);
 };
 
 

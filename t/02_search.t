@@ -76,7 +76,7 @@ subtest 'get where no result' => sub {
         'kawanet', 'lestrrat', 'charsbar',
     );
     isa_ok($itr, 'Nigiri::Iterator');
-    ok($itr->next == undef);
+    ok(not defined $itr->next);
 };
 
 done_testing;
