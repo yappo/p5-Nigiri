@@ -27,11 +27,11 @@ sub get_dbh {
 # copied from Teng
 # for transaction
 sub txn_manager  {
-    $_[0]->{txn_manager} ||= DBIx::TransactionManager->new($_[0]->get_dbh);
+    $_[0]->{context}->{txn_manager} ||= DBIx::TransactionManager->new($_[0]->get_dbh);
 }
 
 sub in_transaction {
-    $_[0]->{txn_manager} ? $_[0]->{txn_manager}->in_transaction : undef;
+    $_[0]->{context}->{txn_manager} ? $_[0]->{context}->{txn_manager}->in_transaction : undef;
 }
 
 sub txn_scope    {
