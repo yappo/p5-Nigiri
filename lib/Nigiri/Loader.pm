@@ -107,15 +107,15 @@ sub create_row_class {
     for my $column ($table_info->columns) {
         my $column_name = $column->name;
         my $code = sub {
-            return $_[0]->{_row_data}->{$column_name} unless defined $_[1];# not hove new value
-            if ($_[0]->{_original_data}->{$column_name} && $_[1] eq $_[0]->{_original_data}->{$column_name}) {
+            return $_[0]->{$column_name} unless defined $_[1];# not hove new value
+            if ($_[0]->{'%NIGIRI_META'}->{original_data}->{$column_name} && $_[1] eq $_[0]->{'%NIGIRI_META'}->{original_data}->{$column_name}) {
                 # not changed from original data
-                $_[0]->{_update_column}->{$column_name} = 0;
-                return $_[0]->{_row_data}->{$column_name} = $_[1];
+                $_[0]->{'%NIGIRI_META'}->{update_column}->{$column_name} = 0;
+                return $_[0]->{$column_name} = $_[1];
             }
             # changed
-            $_[0]->{_update_column}->{$column_name} = 1;
-            return $_[0]->{_row_data}->{$column_name} = $_[1];
+            $_[0]->{'%NIGIRI_META'}->{update_column}->{$column_name} = 1;
+            return $_[0]->{$column_name} = $_[1];
         };
         $pkg->add_package_symbol(
             '&' . $column_name => $code

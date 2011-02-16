@@ -23,13 +23,15 @@ sub new {
     } $self->get_columns;
 
     bless {
-        _table_name             => $self->get_table_name,
-        _row_data               => \%row_data,
-        _original_data          => \%original_data,
-        _update_column          => \%update_column,
-        _primary_keys           => [ $self->get_primary_keys ],
-        _primary_keys_where_sql => $self->get_primary_keys_where_sql,
-        _context                => $self->{context},
+        '%NIGIRI_META' => {
+            table_name             => $self->get_table_name,
+            original_data          => \%original_data,
+            update_column          => \%update_column,
+            primary_keys           => [ $self->get_primary_keys ],
+            primary_keys_where_sql => $self->get_primary_keys_where_sql,
+            context                => $self->{context},
+        },
+        %row_data,
     }, $row_class;
 }
 
