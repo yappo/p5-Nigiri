@@ -4,6 +4,7 @@ use warnings;
 our $VERSION = '0.01';
 
 use DBI;
+use Carp;
 
 use Nigiri::Loader;
 
@@ -23,10 +24,19 @@ sub new {
     }
 
     my $context = {
+        txn_manager => undef, # for transaction, handling in Nigiri::Neta::Base
         dbh         => $dbh,
         owner_pid   => $$,
-        txn_manager => undef, # for transaction, handling in Nigiri::Neta::Base
     };
+
+    # for Root class, Table class, Row class
+    $context->{get_dbh} = sub {
+        if ($context->{owner_pid} != $$) {
+            Carp::confess('this connection is no use. because fork was done.');
+        }
+        $context->{dbh};
+    };
+
     my $loader = Nigiri::Loader->new($context);
 
     my $klass = $loader->load_schema;

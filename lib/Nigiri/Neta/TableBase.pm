@@ -35,17 +35,8 @@ sub new {
     }, $row_class;
 }
 
-sub _verify_pid {
-    my $self = shift;
-    if ($self->{context}->{owner_pid} != $$) {
-        Carp::confess('this connection is no use. because fork was done.');
-    }
-}
-sub get_dbh {
-    my $self = shift;
-    $self->_verify_pid;
-    $self->{context}->{dbh};
-}
+# in Nigiri->new
+sub get_dbh { goto $_[0]->{context}->{get_dbh} }
 
 sub get_primary_keys_where_sql {
     my $self = shift;
