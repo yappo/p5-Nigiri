@@ -130,6 +130,12 @@ in perl code
         $txn->commit;
     };
 
+
+using raw dbh
+
+    my ($count) = $nigiri->get_dbh->selectrow_array('SELECT COUNT(*) FROM user');
+
+
 =head1 DESCRIPTION
 
 Nigiri is
