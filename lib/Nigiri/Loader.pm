@@ -12,13 +12,12 @@ use Package::Stash;
 my $ANON_CLASS_COUNT = 1;
 
 sub new {
-    my($class, $dbh) = @_;
+    my($class, $context) = @_;
 
-    my $inspector = DBIx::Inspector->new(dbh => $dbh);
+    my $inspector = DBIx::Inspector->new(dbh => $context->{dbh});
     bless {
         inspector => $inspector,
-        dbh       => $dbh,
-        owner_pid => $$,
+        context   => $context,
     }, $class;
 }
 
@@ -57,8 +56,7 @@ sub create_base_class {
     while (my($name, $class_names) = each %{ $table_classes }) {
         my $obj = bless {
             row_class  => $class_names->{row},
-            dbh        => $self->{dbh},
-            owner_pid  => $self->{owner_pid},
+            context    => $self->{context},
         }, $class_names->{table};
         $pkg->add_package_symbol('&' . $name, sub {
             $obj

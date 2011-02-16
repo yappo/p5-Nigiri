@@ -28,21 +28,20 @@ sub new {
         _update_column          => \%update_column,
         _primary_keys           => [ $self->get_primary_keys ],
         _primary_keys_where_sql => $self->get_primary_keys_where_sql,
-        _dbh                    => $self->{dbh},
-        _owner_pid              => $self->{owner_pid},
+        _context                => $self->{context},
     }, $row_class;
 }
 
 sub _verify_pid {
     my $self = shift;
-    if ($self->{owner_pid} != $$) {
+    if ($self->{context}->{owner_pid} != $$) {
         Carp::confess('this connection is no use. because fork was done.');
     }
 }
 sub get_dbh {
     my $self = shift;
     $self->_verify_pid;
-    $self->{dbh};
+    $self->{context}->{dbh};
 }
 
 sub get_primary_keys_where_sql {

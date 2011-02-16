@@ -7,21 +7,28 @@ use Carp;
 
 sub _verify_pid {
     my $self = shift;
-    if ($self->{owner_pid} != $$) {
+    if ($self->{context}->{owner_pid} != $$) {
         Carp::confess('this connection is no use. because fork was done.');
     }
 }
 sub get_dbh {
     my $self = shift;
     $self->_verify_pid;
-    $self->{dbh};
+    $self->{context}->{dbh};
 }
+
+# TODO: re-set dbh
+#sub set_dbh {
+#    ${ $_[0]->{context}->{dbh} }       = $_[1];
+#    ${ $_[0]->{context}->{owner_pid} } = $$;
+#}
+
 
 # copied from Teng
 # for transaction
 sub txn_manager  {
     $_[0]->_verify_pid;
-    $_[0]->{txn_manager} ||= DBIx::TransactionManager->new($_[0]->{dbh});
+    $_[0]->{txn_manager} ||= DBIx::TransactionManager->new($_[0]->{context}->{dbh});
 }
 
 sub in_transaction {

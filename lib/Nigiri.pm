@@ -21,14 +21,18 @@ sub new {
             $args{attr}
         ) or die "connect failed: $target";
     }
-    my $loader = Nigiri::Loader->new($dbh);
+
+    my $context = {
+        dbh         => $dbh,
+        owner_pid   => $$,
+        txn_manager => undef, # for transaction, handling in Nigiri::Neta::Base
+    };
+    my $loader = Nigiri::Loader->new($context);
 
     my $klass = $loader->load_schema;
 
     bless {
-        dbh         => $dbh,
-        txn_manager => undef, # for transaction, handling in Nigiri::Neta::Base
-        owner_pid   => $$,
+        context => $context,
     }, $klass;
 }
 

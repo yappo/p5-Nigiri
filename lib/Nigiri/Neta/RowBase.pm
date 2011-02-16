@@ -4,14 +4,14 @@ use warnings;
 
 sub _verify_pid {
     my $self = shift;
-    if ($self->{_owner_pid} != $$) {
+    if ($self->{_context}->{owner_pid} != $$) {
         Carp::confess('this connection is no use. because fork was done.');
     }
 }
 sub get_dbh {
     my $self = shift;
     $self->_verify_pid;
-    $self->{_dbh};
+    $self->{_context}->{dbh};
 }
 
 sub save {
